@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        video {
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+
+        canvas {
+            width: 300px;
+            height: 300px;
+            border: 1px solid red;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+<video autoplay id='video'></video>
+<canvas id="output"></canvas>
+<image id="img"></image>
+</body>
+</html>
+<script>
+    socket = new WebSocket("ws://127.0.0.1:8000/face/张三/")
+    var video = $("#video").get(0)
+    var back = $("#output").get(0)
+    //console.log(back,video)
+    var backcontext = back.getContext('2d')
+
+    function draw() {
+        //console.log(video)
+        backcontext.drawImage(video, 0, 0, back.width, back.height)
+        try {
+            backcontext.drawImage(video, 0, 0, back.width, back.height)
+        } catch (e) {
+            if (e.name == "NS_ERROR_NOT_AVAILABLE") {
+                return setInterval(draw, 10000)
+            } else {
+                throw e
+            }
+        }
+        src = back.toDataURL('image/png')
+
+        var img = $("#img").get(0)
+        img.src = src
+        src = src.replace(/^data:image\/(png|jpg);base64,/, "")
+        setTimeout(draw, 5000)
+        let socketData = {imgData: src, username: "张三"}
+        console.log(
+            )
+        socket.send(JSON.stringify(socketData))
+    }
+
+    var success = function (stream) {
+        console.log('摄像头开启成功')
+        //videoUrl = window.URL.createObjectURL(stream)
+        //video.src = videoUrl
+        video.srcObject = stream
+        console.log(stream)
+        draw()
+    }
+    var error = (error) => {
+        alert('调用失败')
+    }
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia
+    navigator.getUserMedia({video: true, audio: false}, success, error)
+</script>
