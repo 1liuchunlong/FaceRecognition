@@ -8,9 +8,19 @@ from channels.exceptions import StopConsumer
 from channels.generic.websocket import WebsocketConsumer
 
 from App.face_recognition_camera.face_recognition_image import face_recognitions
+from App.liveness_detection.test import liveness_detection
 
+def recognition(img):
+    imgData=img
+    flag = liveness_detection(img)
+    img = base64_to_image(imgData)
+    # base64解码
+    img = base64.b64decode(imgData)
+    # 转换为np数组
+    img = np.fromstring(img, np.uint8)
+    name=face_recognitions(img)
 
-
+    return (name,flag)
 
 def base64_to_image(base64_code):
     """
@@ -45,14 +55,14 @@ class ChatConsumer(WebsocketConsumer):
     def websocket_receive(self, message):
         # 浏览器基于websocket向后端发送数据，自动触发接收消息。
         str_image = message['text']
-        img=base64_to_image(str_image)
+
         # show(img)
         self.send("你好")
         # jsonData=json.loads(str_image)
         # print(jsonData['username'])
         # 以下两行是识别部分
         # img=
-        result=face_recognitions(img)
+        result=recognition(str_image)
         self.send("here  is"+result)
 
         # self.close()
