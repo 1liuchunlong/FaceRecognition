@@ -13,9 +13,9 @@ import numpy as np
 import torch.nn.functional as F
 
 
-from src.model_lib.MiniFASNet import MiniFASNetV1, MiniFASNetV2,MiniFASNetV1SE,MiniFASNetV2SE
-from src.data_io import transform as trans
-from src.utility import get_kernel, parse_model_name
+from App.liveness_detection.src.model_lib.MiniFASNet import MiniFASNetV1, MiniFASNetV2,MiniFASNetV1SE,MiniFASNetV2SE
+from App.liveness_detection.src.data_io import transform as trans
+from App.liveness_detection.src.utility import get_kernel, parse_model_name
 
 MODEL_MAPPING = {
     'MiniFASNetV1': MiniFASNetV1,
