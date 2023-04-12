@@ -31,7 +31,7 @@ def check_image(image):
         return True
 
 
-def liveness_detection(image, model_dir="./resources/anti_spoof_models", device_id=0):
+def liveness_detection(image, model_dir="./App/liveness_detection/resources/anti_spoof_models", device_id=0):
     model_test = AntiSpoofPredict(device_id)
     image_cropper = CropImage()
     # image = cv2.imread(SAMPLE_IMAGE_PATH + image_name)
@@ -66,10 +66,12 @@ def liveness_detection(image, model_dir="./resources/anti_spoof_models", device_
         print("Image  is Real Face. Score: {:.2f}.".format(value))
         result_text = "RealFace Score: {:.2f}".format(value)
         color = (255, 0, 0)
+        flag=1
     else:
         print("Image  is Fake Face. Score: {:.2f}.".format(value))
         result_text = "FakeFace Score: {:.2f}".format(value)
         color = (0, 0, 255)
+        flag=0
     print("Prediction cost {:.2f} s".format(test_speed))
     cv2.rectangle(
         image,
@@ -82,7 +84,7 @@ def liveness_detection(image, model_dir="./resources/anti_spoof_models", device_
         (image_bbox[0], image_bbox[1] - 5),
         cv2.FONT_HERSHEY_COMPLEX, 0.5*image.shape[0]/1024, color)
 
-    return image;
+    return flag;
     # format_ = os.path.splitext(image_name)[-1]
     # result_image_name = image_name.replace(format_, "_result" + format_)
     # cv2.imwrite(SAMPLE_IMAGE_PATH + result_image_name, image)

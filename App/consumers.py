@@ -9,18 +9,23 @@ from channels.generic.websocket import WebsocketConsumer
 
 from App.face_recognition_camera.face_recognition_image import face_recognitions
 from App.liveness_detection.test import liveness_detection
-
+#
 def recognition(img):
     imgData=img
-    flag = liveness_detection(img)
+    # flag = liveness_detection(img)
     img = base64_to_image(imgData)
     # base64解码
-    img = base64.b64decode(imgData)
+    # img = base64.b64decode(imgData)
     # 转换为np数组
-    img = np.fromstring(img, np.uint8)
-    name=face_recognitions(img)
+    # img = np.fromstring(img, np.uint8)
+    flag=liveness_detection(img)
+    if flag==1:
+        name = face_recognitions(img)
+        return name
 
-    return (name,flag)
+
+
+    return "fake face"
 
 def base64_to_image(base64_code):
     """
