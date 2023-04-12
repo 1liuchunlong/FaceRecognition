@@ -7,25 +7,27 @@ import numpy as np
 from channels.exceptions import StopConsumer
 from channels.generic.websocket import WebsocketConsumer
 
+from App.face_landmark_dlib.face_landmark_image import detect_landmark
 from App.face_recognition_camera.face_recognition_image import face_recognitions
 from App.liveness_detection.test import liveness_detection
+
+
 #
 def recognition(img):
-    imgData=img
+    imgData = img
     # flag = liveness_detection(img)
     img = base64_to_image(imgData)
     # base64解码
     # img = base64.b64decode(imgData)
     # 转换为np数组
     # img = np.fromstring(img, np.uint8)
-    flag=liveness_detection(img)
-    if flag==1:
+    flag = liveness_detection(img)
+    if flag == 1:
         name = face_recognitions(img)
-        return name
+        return name, flag
 
+    return "fake face", flag
 
-
-    return "fake face"
 
 def base64_to_image(base64_code):
     """
@@ -50,6 +52,7 @@ def show(img):
     print("22222222222222222222222222")
 
 
+# startRecognition=0
 class ChatConsumer(WebsocketConsumer):
     def websocket_connect(self, message):
         print("接收到连接请求")
@@ -62,13 +65,23 @@ class ChatConsumer(WebsocketConsumer):
         str_image = message['text']
 
         # show(img)
-        self.send("你好")
+        # self.send("你好")
         # jsonData=json.loads(str_image)
         # print(jsonData['username'])
         # 以下两行是识别部分
         # img=
-        result=recognition(str_image)
-        self.send("here  is"+result)
+        result = {"data": '', "type": '0', "flag": 0}
+        name, flag = recognition(str_image)
+        result["flag"] = flag
+        # if flag == 1:
+        #     fecemark = detect_landmark(str_image)
+        #     fecemark = base64.b64encode(fecemark)
+        #     result["data"] = fecemark
+        #     result["type"] = 1
+        #     self.send(json.dump(result), content_type='application/json')
+        result["data"] = name
+        result["type"] = 0
+        self.send(json.dump(result), content_type='application/json')
 
         # self.close()
 

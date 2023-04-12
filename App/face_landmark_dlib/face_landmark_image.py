@@ -48,13 +48,13 @@ def detect_landmark(image):
             cv.circle(image, pt_pos, 3, color=(255, 0, 0), thickness=-1)
     return image
 
-if __name__ == '__main__':
-    image=cv.imread('2.jpg')
-    mark_img=detect_landmark(image)
-
-    while True:
-        cv.imshow("landmark", mark_img)
-        if cv.waitKey(10)==27:
-            break
-
-    cv.destroyAllWindows()
+# if __name__ == '__main__':
+#     image=cv.imread('2.jpg')
+#     mark_img=detect_landmark(image)
+#
+#     while True:
+#         cv.imshow("landmark", mark_img)
+#         if cv.waitKey(10)==27:
+#             break
+#
+#     cv.destroyAllWindows()
